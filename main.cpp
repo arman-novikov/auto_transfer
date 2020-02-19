@@ -9,14 +9,15 @@
 
 namespace fs = std::filesystem;
 using namespace std;
-//g++ -std=c++17 -O2 -Wall -no-pie main.cpp -o auto_transf
+
 static const unsigned short default_overtime = 1;
 
 static string get_ftime(const fs::path &fpath)
 {
     using namespace std::chrono;
     const auto ftime = fs::last_write_time(fpath);
-    const auto sctp = time_point_cast<system_clock::duration>(ftime - decltype(ftime)::clock::now() + system_clock::now());
+    const auto delta = decltype(ftime)::clock::now() - ftime; 
+    const auto sctp = time_point_cast<system_clock::duration>(system_clock::now() - delta );
     const time_t cftime = std::chrono::system_clock::to_time_t(sctp); // assuming system_clock
     return string(asctime(localtime(&cftime))); // returns char*
 }
